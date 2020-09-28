@@ -1,0 +1,15 @@
+.editor-panel > *:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+.big-title {
+    font-size: 24px;
+}
+
+.padded {
+    padding: 1.5rem;
+}
+
+.sapMInputBaseReadonlyWrapper {
+    border: none !important;
+}

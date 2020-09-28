@@ -1,0 +1,54 @@
+<mvc:View controllerName="training.hours.web.controller.Projects" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m">
+	<Shell id="shell">
+		<App id="app">
+			<pages>
+				<SplitApp id="splitter" initialDetail="welcome">
+					<masterPages>
+						<Page id="master">
+							<customHeader>
+								<Bar>
+									<contentLeft>
+										<Button text="{i18n>hours}" press="onShowHours" type="Emphasized"/>
+									</contentLeft>
+									<contentRight>
+										<Button text="{i18n>create}" press="onCreate" type="Accept" icon="sap-icon://add"/>
+									</contentRight>
+								</Bar>
+							</customHeader>
+							<List items="{/projects}" itemPress="onShow" growing="true" growingScrollToLoad="true" noDataText=" " id="projectList">
+								<items>
+									<StandardListItem title="{name}" description="{description}" type="Navigation"/>
+								</items>
+							</List>
+						</Page>
+					</masterPages>
+					<detailPages>
+						<Page id="welcome">
+							<content>
+								<VBox class="padded">
+									<Title text="{i18n>welcomeTitle}" class="big-title"/>
+								</VBox>
+							</content>
+						</Page>
+						<Page id="detail">
+							<content></content>
+						</Page>
+						<Page id="editor">
+							<content>
+								<mvc:XMLView viewName="training.hours.web.view.ProjectEditor"/>
+							</content>
+							<footer>
+								<Bar>
+									<contentRight>
+										<Button text="{i18n>save}" press="onSave" type="Emphasized" icon="sap-icon://save"/>
+										<Button text="{i18n>delete}" press="onDelete" id="deleteButton" type="Reject" icon="sap-icon://delete"/>
+									</contentRight>
+								</Bar>
+							</footer>
+						</Page>
+					</detailPages>
+				</SplitApp>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>

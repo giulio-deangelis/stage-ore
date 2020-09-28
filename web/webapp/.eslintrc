@@ -1,0 +1,15 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "env": {
+        "es6": true
+    },
+    "rules": {
+        "semi": off,
+        "no-shadow": off,
+        "no-console": off,
+        "quotes": off,
+        "curly": off
+    }
+}

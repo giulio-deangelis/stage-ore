@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+	<edmx:DataServices>
+		<Schema Namespace="Hours" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+			<EntityContainer Name="EntityContainer">
+				<EntitySet Name="DayHours" EntityType="Hours.DayHours">
+					<NavigationPropertyBinding Path="taskName" Target="Tasks"/>
+				</EntitySet>
+				<EntitySet Name="Projects" EntityType="Hours.Projects">
+					<NavigationPropertyBinding Path="tasks" Target="Tasks"/>
+				</EntitySet>
+				<EntitySet Name="Tasks" EntityType="Hours.Tasks">
+					<NavigationPropertyBinding Path="projectName" Target="Projects"/>
+					<NavigationPropertyBinding Path="hours" Target="DayHours"/>
+				</EntitySet>
+			</EntityContainer>
+			<EntityType Name="DayHours">
+				<Key>
+					<PropertyRef Name="user"/>
+					<PropertyRef Name="day"/>
+					<PropertyRef Name="hours"/>
+					<PropertyRef Name="taskName_name"/>
+					<PropertyRef Name="taskName_projectName_name"/>
+				</Key>
+				<Property Name="user" Type="Edm.String" MaxLength="100" Nullable="false"/>
+				<Property Name="day" Type="Edm.Date" Nullable="false"/>
+				<Property Name="hours" Type="Edm.Int32" Nullable="false"/>
+				<NavigationProperty Name="taskName" Type="Hours.Tasks" Partner="hours">
+					<ReferentialConstraint Property="taskName_name" ReferencedProperty="name"/>
+					<ReferentialConstraint Property="taskName_projectName_name" ReferencedProperty="projectName_name"/>
+				</NavigationProperty>
+				<Property Name="taskName_name" Type="Edm.String" MaxLength="60" Nullable="false"/>
+				<Property Name="taskName_projectName_name" Type="Edm.String" MaxLength="100" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="Projects">
+				<Key>
+					<PropertyRef Name="name"/>
+				</Key>
+				<Property Name="name" Type="Edm.String" MaxLength="100" Nullable="false"/>
+				<Property Name="description" Type="Edm.String" MaxLength="1000"/>
+				<NavigationProperty Name="tasks" Type="Collection(Hours.Tasks)" Partner="projectName"/>
+			</EntityType>
+			<EntityType Name="Tasks">
+				<Key>
+					<PropertyRef Name="name"/>
+					<PropertyRef Name="projectName_name"/>
+				</Key>
+				<Property Name="name" Type="Edm.String" MaxLength="60" Nullable="false"/>
+				<NavigationProperty Name="projectName" Type="Hours.Projects" Partner="tasks">
+					<ReferentialConstraint Property="projectName_name" ReferencedProperty="name"/>
+				</NavigationProperty>
+				<Property Name="description" Type="Edm.String" MaxLength="1000"/>
+				<NavigationProperty Name="hours" Type="Collection(Hours.DayHours)" Partner="taskName"/>
+				<Property Name="projectName_name" Type="Edm.String" MaxLength="100" Nullable="false"/>
+			</EntityType>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

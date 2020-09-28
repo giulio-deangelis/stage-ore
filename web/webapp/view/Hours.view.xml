@@ -1,0 +1,33 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="training.hours.web.controller.Hours"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<App>
+		<pages>
+			<Page>
+			    <customHeader>
+			        <Bar>
+			            <contentLeft>
+			                <Button press="onLeave" icon="sap-icon://nav-back"/>
+			            </contentLeft>
+			            <contentRight>
+			                <DatePicker change="onDateChange" id="date" valueFormat="dd/MM/yyyy" displayFormat="dd/MM/yyyy" width="8rem"/>
+			            </contentRight>
+			        </Bar>
+			    </customHeader>
+				<content>
+					<Table mode="MultiSelect" selectionChange="onSelect" noDataText="{i18n>noData}" id="hoursTable"></Table>
+				</content>
+				<footer>
+				    <Bar>
+				        <contentLeft>
+				            <Button text="{i18n>save}" press="onSave" id="saveButton" icon="sap-icon://save" type="Emphasized" visible="false"/>
+				            <Button text="{i18n>add}" press="onAdd" id="addButton" icon="sap-icon://add" type="Accept"/>
+				            <Button text="{i18n>cancel}" press="onCancel" id="cancelButton" icon="sap-icon://decline" visible="false"/>
+				            <Button text="{i18n>edit}" press="onEdit" id="editButton" icon="sap-icon://edit" type="Ghost" visible="false"/>
+				            <Button text="{i18n>remove}" press="onRemove" id="removeButton" icon="sap-icon://delete" type="Reject" visible="false"/>
+				        </contentLeft>
+				    </Bar>
+				</footer>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>
