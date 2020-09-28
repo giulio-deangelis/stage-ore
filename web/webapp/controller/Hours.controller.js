@@ -1,4 +1,4 @@
-const dbg = {} 
+const dbg = {}
 
 sap.ui.define([
     'sap/ui/core/mvc/Controller',
@@ -38,9 +38,10 @@ sap.ui.define([
     MessageHelper
 ) => {
     'use strict'
-    
+
     var model, odataModel, msg
-    var oldData, selectedRow
+    var oldData, selectedRow, editing
+    var firstDate, lastDate
     var projectsBinding, tasksBinding, hoursBinding
     var projects, tasks, hours
     const bus = sap.ui.getCore().getEventBus()
@@ -58,43 +59,43 @@ sap.ui.define([
             model = new JSONModel()
             odataModel = this.getView().getModel()
             msg = new MessageHelper(this)
-            
+
             bus.publish('app', 'onLimitWidth', {limitWidth: false})
-            
+
             projectsBinding = odataModel.bindList('/projects')
             tasksBinding = odataModel.bindList('/tasks')
             projects = await projectsBinding.requestContexts(0, Infinity)
             tasks = await tasksBinding.requestContexts(0, Infinity)
-            
+
             this.setDate(new Date())
         },
 
         onLeave() {
             this.getOwnerComponent().getRouter().navTo('Projects')
         },
-        
+
         onDateChange(ev) {
             const date = Formatter.parseDate(ev.getParameter('value'))
             this.setDate(date)
         },
-        
+
         onSelect(ev) {
             const count = ev.getSource().getSelectedItems().length
             this.byId('editButton').setVisible(count === 1)
             this.byId('removeButton').setVisible(count > 0)
         },
-        
+
         onTaskSelect(ev, params) {
             const projectsBox = params.projectsBox
             const tasksBox = params.tasksBox
-            
+
             const projectName = projectsBox
                 .getSelectedItem()
                 .getBindingContext()
                 .getProperty('name')
-                
+
             tasksBox.setSelectedItem(null)
-                
+
             tasksBox.bindItems({
                 path: '/tasks',
                 filters: new Filter('project_name', 'EQ', projectName),
@@ -104,34 +105,71 @@ sap.ui.define([
                 })
             })
         },
-        
+
         onAdd() {
             oldData = this._copyData()
+            editing = false
             model.unshiftProperty('/hours', {})
-            this.toggleEditable(true, this.byId('hoursTable').getItems()[0], true)
+            this.setEditableRow(true, this.byId('hoursTable').getItems()[0], true)
         },
-        
+
         onEdit() {
             oldData = this._copyData()
-            this.toggleEditable(true)
+            editing = true
+            this.setEditableRow(true)
         },
-        
+
         onCancel() {
             model.setData(oldData)
-            this.toggleEditable(false)
+            this.setEditableRow(false)
         },
-        
+
         onSave() {
-            this.toggleEditable(false)
-            // TODO save by merging with hoursBinding
+            const table = this.byId('hoursTable')
+            const row = selectedRow.getBindingContext().getObject()
+            const year = firstDate.getFullYear()
+            const month = firstDate.getMonth()
+            const user = row.user
+            const projectName = row.project
+            const taskName = row.task
+
+            for (let day = 1; day <= 16; ++day) {
+                const hoursEntity = {
+                    'user': user,
+                    'task_project_name': projectName,
+                    'task_name': taskName,
+                    'day': new Date(year, month, day).toISOString(),
+                    'hours': parseInt(row[`day${day}`])
+                }
+                if (editing)
+                    this._update(hoursEntity)
+                else this._create(hoursEntity)
+            }
+
+            table.setBusy(true)
+
+            this._submitBatch({
+
+                success() {},
+
+                error() {
+                    msg.error('saveFailed')
+                },
+
+                finally() {
+                    table.setBusy(false)
+                }
+            })
+
+            this.setEditableRow(false)
         },
-        
-        toggleEditable(editable, row, editableKeys) {
+
+        setEditableRow(editable, row, editableKeys) {
             const table = this.byId('hoursTable')
             let i = editable ? editableKeys ? 0 : 3 : 0
             row = row || table.getSelectedItem() || selectedRow
             const cells = row.getCells()
-            
+
             function setEditable(control) {
                 if (control instanceof Input) {
                     control.setEditable(editable)
@@ -144,61 +182,66 @@ sap.ui.define([
                     }
                 }
             }
-            
+
             if (i < 3) {
                 const projectsBox = cells[1].findElements().find(it => it instanceof ComboBox)
                 const tasksBox = cells[2].findElements().find(it => it instanceof ComboBox)
                 this._bindComboBoxes(projectsBox, tasksBox)
             }
-            
+
             for (; i < cells.length; ++i)
                 setEditable(cells[i])
-                
-            selectedRow = editable ? row : null           
+
+            selectedRow = editable ? row : null
             table.setMode(editable ? ListMode.None : ListMode.MultiSelect)
-            
+
             this.byId('saveButton').setVisible(editable)
             this.byId('addButton').setVisible(!editable)
             this.byId('editButton').setVisible(!editable && !!selectedRow)
             this.byId('removeButton').setVisible(!editable && !!selectedRow)
             this.byId('cancelButton').setVisible(editable)
         },
-        
+
         async setDate(date) {
-            const {firstDate, lastDate} = date.getFortnight()
+            const fortnight = date.getFortnight()
+            firstDate = fortnight.firstDate
+            lastDate = fortnight.lastDate
             const filter = new Filter('day', 'BT', firstDate.toISOString(), lastDate.toISOString())
             const sorters = [new Sorter('user'), new Sorter('task_project_name'), new Sorter('task_name'), new Sorter('day')]
-            
+
             hoursBinding = odataModel.bindList('/hours', null, sorters, filter)
             hours = await hoursBinding.requestContexts(0, Infinity)
-            
+
             this.byId('date').setValue(Formatter.formatDate(date))
-            this._bindTable(firstDate.getDate(), lastDate.getDate())
+            this._bindTable()
         },
 
-        _bindTable(firstDay, lastDay) {
+        _bindTable() {
             const table = this.byId('hoursTable').destroyRows()
             const cells = []
-            
+            const firstDay = firstDate.getDate()
+            const lastDay = lastDate.getDate()
+
+
             const projectsWrapper = new HBox()
                 .addItem(new Label({text: '{project}'}))
                 .addItem(new ComboBox({visible: false}))
-                
+
             const tasksWrapper = new HBox()
                 .addItem(new Label({text: '{task}'}))
                 .addItem(new ComboBox({visible: false}))
-            
+
             cells.push(new Input({value: '{user}', editable: false}))
             cells.push(projectsWrapper)
             cells.push(tasksWrapper)
-            
+
             table.addColumn(new Column().setHeader(new Label({text: msg.i18n('user')})))
             table.addColumn(new Column().setHeader(new Label({text: msg.i18n('project')})))
             table.addColumn(new Column().setHeader(new Label({text: msg.i18n('task')})))
-            
+
             if (lastDay === 16)
                 lastDay = 15
-            
+
             for (let day = firstDay; day <= lastDay; ++day) {
                 table.addColumn(new Column().setHeader(new Label({text: day})))
                 cells.push(new Input({
@@ -206,47 +249,47 @@ sap.ui.define([
                     editable: false,
                     width: '.5rem',
                     type: InputType.Number
-                    
+
                 }))
             }
-            
+
             table.setModel(model)
-            
+
             const rows = []
             let prevUser, prevProject, prevTask
-            
+
             for (const hour of hours) {
                 const user = hour.getProperty('user')
                 const project = hour.getProperty('task_project_name')
                 const task = hour.getProperty('task_name')
                 const day = new Date(hour.getProperty('day')).getDate()
                 const hours = hour.getProperty('hours')
-                
+
                 if (prevUser !== user || prevProject !== project || prevTask !== task)
                     rows.push({user, project, task})
                 else rows.last()[`day${day}`] = hours
-                
+
                 prevUser = user
                 prevProject = project
                 prevTask = task
             }
-            
+
             model.setData({
                 projects: projects.map(it => it.getObject()),
                 tasks: tasks.map(it => it.getObject()),
                 hours: rows
             })
-            
+
             table.bindItems({
                 path: '/hours',
                 template: new ColumnListItem({cells})
             })
         },
-        
+
         _bindComboBoxes(projectsBox, tasksBox) {
             projectsBox.setSelectedItem(null)
             tasksBox.setSelectedItem(null)
-            
+
             projectsBox.bindItems({
                 path: '/projects',
                 template: new ListItem({
@@ -254,26 +297,51 @@ sap.ui.define([
                     text: '{name}'
                 })
             })
-            
+
             tasksBox.unbindItems()
-            
+
             projectsBox.attachChange({projectsBox, tasksBox}, this.onTaskSelect, this)
         },
-        
+
         _copyData() {
             const data = model.getData()
             const newData = {projects: [], tasks: [], hours: []}
-            
+
             for (const project of data.projects)
                 newData.projects.push(Object.assign({}, project))
-                
+
             for (const task of data.tasks)
                 newData.tasks.push(Object.assign({}, task))
-            
+
             for (const hour of data.hours)
                 newData.hours.push(Object.assign({}, hour))
-                
+
             return newData
+        },
+
+        _create(newEntity) {
+            hoursBinding.create(newEntity)
+        },
+
+        _update(newEntity) {
+            const entity = hoursBinding.getContexts().find(it =>
+                it.getProperty('user') === newEntity.user &&
+                it.getProperty('task_project_name') === newEntity.task_project_name &&
+                it.getProperty('task_name') === newEntity.task_name &&
+                it.getProperty('day') === newEntity.day
+            )
+            if (!entity)
+                this._create(newEntity)
+            else if (newEntity.hours >= 0)
+                entity.setProperty('hours', newEntity.hours, 'batch')
+            else entity.delete('$auto')
+        },
+
+        _submitBatch(callbacks) {
+            odataModel.submitBatch('batch')
+                .then(callbacks.success)
+                .catch(callbacks.error)
+                .finally(callbacks.finally)
         }
     })
 })

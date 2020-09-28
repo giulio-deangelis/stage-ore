@@ -10,6 +10,7 @@
         "no-shadow": off,
         "no-console": off,
         "quotes": off,
-        "curly": off
+        "curly": off,
+        "dot-notation": off
     }
 }

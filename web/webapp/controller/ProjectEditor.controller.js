@@ -36,20 +36,11 @@ sap.ui.define([
             bus.subscribe('editor', 'onSave', this.onSave, this)
             bus.subscribe('editor', 'onDelete', this.onDelete, this)
             bus.subscribe('editor', 'onBind', this.onBind, this)
-            bus.subscribe('editor', 'onChangeMode', this.onChangeMode, this)
             bus.subscribe('editor', 'onLeave', this.onLeave, this)
         },
-
-        onChangeMode(ch, ev, params) {
-            this.setEditable(params.editable)
-        },
-
+        
         onLeave() {
             deletedTasks.clear()
-        },
-
-        setEditable(editable) {
-
         },
 
         async onBind(ch, ev, params) {
@@ -202,7 +193,7 @@ sap.ui.define([
                 return false
             }
             task.name = task.name.trim()
-            task.description = task.description?.trim()
+            task.description = task.description ? task.description.trim() : null
             return true
         },
 
