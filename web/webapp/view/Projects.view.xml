@@ -8,7 +8,7 @@
 							<customHeader>
 								<Bar>
 									<contentLeft>
-										<Button text="{i18n>hours}" press="onShowHours" type="Emphasized"/>
+										<Button press="onLeave" icon="sap-icon://nav-back"/>
 									</contentLeft>
 									<contentRight>
 										<Button text="{i18n>create}" press="onCreate" type="Accept" icon="sap-icon://add"/>

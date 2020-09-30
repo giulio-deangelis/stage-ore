@@ -10,6 +10,12 @@
     padding: 1.5rem;
 }
 
+.tile-container > *:not(:last-child) {
+    margin-right: 2rem;
+}
+
+/* -------------------------------- */
+
 .sapMInputBaseReadonlyWrapper {
     border: none !important;
 }

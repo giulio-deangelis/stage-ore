@@ -15,12 +15,12 @@ sap.ui.define([], () => {
             const month = this.getMonth()
             let firstDate, lastDate
             
-            if (day > 16) {
+            if (day < 16) {
+                firstDate = new Date(year, month, 1)
+                lastDate = new Date(year, month, 15)
+            } else {
                 firstDate = new Date(year, month, 16)
                 lastDate = new Date(year, month, this.getLastDayOfMonth())
-            } else {
-                firstDate = new Date(year, month, 1)
-                lastDate = new Date(year, month, 16)
             }
             
             return {firstDate, lastDate}
@@ -31,6 +31,12 @@ sap.ui.define([], () => {
             const firstDay = firstDate.getDate()
             const lastDay = lastDate.getDate()
             return {firstDay, lastDay}
+        },
+        
+        equalsIgnoreTime(other) {
+            return this.getDate() === other.getDate() &&
+                this.getMonth() === other.getMonth() &&
+                this.getFullYear() === other.getFullYear()
         }
     })
 })

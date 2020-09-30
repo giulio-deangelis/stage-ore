@@ -1,14 +1,14 @@
 sap.ui.define([
-	"sap/ui/core/UIComponent",
-	"sap/ui/Device",
-	"training/hours/web/model/models"
+	'sap/ui/core/UIComponent',
+	'sap/ui/Device',
+	'training/hours/web/model/models'
 ], function (UIComponent, Device, models) {
-	"use strict";
+	'use strict';
 
-	return UIComponent.extend("training.hours.web.Component", {
+	return UIComponent.extend('training.hours.web.Component', {
 
 		metadata: {
-			manifest: "json"
+			manifest: 'json'
 		},
 
 		/**
@@ -16,7 +16,7 @@ sap.ui.define([
 		 * @public
 		 * @override
 		 */
-		init: function () {
+		init() {
 			// call the base component's init function
 			UIComponent.prototype.init.apply(this, arguments);
 
@@ -24,7 +24,7 @@ sap.ui.define([
 			this.getRouter().initialize();
 
 			// set the device model
-			this.setModel(models.createDeviceModel(), "device");
+			this.setModel(models.createDeviceModel(), 'device');
 		}
 	});
 });

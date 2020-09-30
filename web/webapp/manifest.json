@@ -43,10 +43,10 @@
 	"sap.ui5": {
 		"flexEnabled": false,
 		"rootView": {
-			"viewName": "training.hours.web.view.Projects",
+			"viewName": "training.hours.web.view.Home",
 			"type": "XML",
 			"async": true,
-			"id": "Projects"
+			"id": "Home"
 		},
 		"dependencies": {
 			"minUI5Version": "1.65.6",
@@ -92,18 +92,27 @@
 				"viewPath": "training.hours.web.view",
 				"controlAggregation": "pages",
 				"controlId": "app",
-				"clearControlAggregation": false
+				"clearControlAggregation": false,
+				"bypassed": {
+					"target": []
+				}
 			},
 			"routes": [{
-				"name": "Projects",
-				"pattern": "Projects",
-				"target": ["Projects"]
+				"name": "Home",
+				"pattern": "Home",
+				"titleTarget": "",
+				"greedy": false,
+				"target": ["Home"]
 			}, {
 				"name": "Hours",
 				"pattern": "Hours",
 				"titleTarget": "",
 				"greedy": false,
 				"target": ["Hours"]
+			}, {
+				"name": "Projects",
+				"pattern": "Projects",
+				"target": ["Projects"]
 			}],
 			"targets": {
 				"Projects": {
@@ -119,6 +128,12 @@
 				"Hours": {
 					"viewType": "XML",
 					"viewName": "Hours"
+				},
+				"Home": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewName": "Home"
 				}
 			}
 		}

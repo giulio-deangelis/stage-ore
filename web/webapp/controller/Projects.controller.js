@@ -35,9 +35,14 @@ sap.ui.define([
             msg = new MessageHelper(this)
             this.byId('shell').setAppWidthLimited(true)
         },
+        
+        onLeave() {
+            model.resetChanges()
+            this.getOwnerComponent().getRouter().navTo('Home')
+        },
 
         navTo(id) {
-            model.resetChanges('projects')
+            model.resetChanges()
             this.byId('splitter').toDetail(this.createId(id), 'fade')
         },
         
@@ -74,10 +79,6 @@ sap.ui.define([
             bus.publish('editor', 'onLeave')
             this.navTo('welcome')
             model.refresh()
-        },
-        
-        onShowHours() {
-            this.getOwnerComponent().getRouter().navTo('Hours')
         }
     })
 })
