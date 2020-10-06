@@ -1,6 +1,3 @@
-/* eslint no-console:, no-warning-comments:, no-unused-vars:, quotes:, curly: */
-/* eslint-env es6 */
-
 /** Kotlin-like String extension methods */
 sap.ui.define([], function () {
 	'use strict';

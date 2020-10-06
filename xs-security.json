@@ -1,14 +1,15 @@
 {
-  "xsappname": "hours",
-  "tenant-mode": "dedicated",
-  "description": "Security profile of called application",
-  "role-templates": [
-    {
-      "name": "Token_Exchange",
-      "description": "UAA",
-      "scope-references": [
-        "uaa.user"
-      ]
-    }
-  ]
+	"xsappname": "hours",
+	"tenant-mode": "dedicated",
+	"scopes": [
+	    {"name": "$XSAPPNAME.admin"},
+	    {"name": "$XSAPPNAME.user"}
+    ],
+	"role-templates": [{
+	    "name": "admin",
+	    "scope-references": ["$XSAPPNAME.admin"]
+	}, {
+	    "name": "user",
+	    "scope-references": ["$XSAPPNAME.user"]
+	}]
 }

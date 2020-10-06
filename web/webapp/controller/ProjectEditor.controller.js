@@ -4,10 +4,7 @@ sap.ui.define([
     'sap/m/StandardListItem',
     'sap/ui/model/Filter',
     'training/hours/web/util/MessageHelper',
-    'training/hours/web/util/FragmentManager',
-    'training/hours/web/util/extensions/String',
-    'training/hours/web/util/extensions/Array',
-    'training/hours/web/util/extensions/JSONModel'
+    'training/hours/web/util/FragmentManager'
 ], (
     Controller,
     JSONModel,

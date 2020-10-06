@@ -1,7 +1,12 @@
 sap.ui.define([
 	'sap/ui/core/UIComponent',
 	'sap/ui/Device',
-	'training/hours/web/model/models'
+	'./model/models',
+    './ext/String',
+    './ext/Array',
+    './ext/Date',
+    './ext/Table',
+    './ext/JSONModel'
 ], function (UIComponent, Device, models) {
 	'use strict';
 

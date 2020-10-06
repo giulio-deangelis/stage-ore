@@ -1,10 +1,7 @@
 /* eslint no-console:, no-warning-comments:, no-unused-vars:, quotes:, curly: */
 /* eslint-env es6 */
 
-sap.ui.define([
-	'sap/ui/core/Control',
-	'./Array'
-], (Control) => {
+sap.ui.define(['sap/ui/core/Control'], (Control) => {
 	'use strict';
 
 	$.extend(Control.prototype, {

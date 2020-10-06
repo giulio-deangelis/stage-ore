@@ -3,6 +3,7 @@ namespace training.hours;
 entity Project {
     key name: String(100);
     description: String(1000);
+    archived: Boolean;
     
     tasks: Association to many Task on tasks.project = $self;
 }

@@ -1,8 +1,4 @@
-sap.ui.define([
-	'sap/ui/model/json/JSONModel',
-	'./String',
-	'./Array'
-], (JSONModel) => {
+sap.ui.define(['sap/ui/model/json/JSONModel'], (JSONModel) => {
 	'use strict'
 
 	$.extend(JSONModel.prototype, {

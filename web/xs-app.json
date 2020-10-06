@@ -1,22 +1,19 @@
 {
-  "welcomeFile": "/web/index.html",
-  "authenticationMethod": "route",
-  "logout": {
-    "logoutEndpoint": "/do/logout"
-  },
-  "routes": [
-    {
-      "source": "^/hours/(.*)$",
-      "target": "$1",
-      "authenticationType": "none",
-      "destination": "srv_api",
-      "csrfProtection": false
-    },
-    {
-      "source": "^/web/(.*)$",
-      "target": "$1",
-      "authenticationType": "none",
-      "localDir": "webapp"
-    }
-  ]
+	"welcomeFile": "/web/index.html",
+	"authenticationMethod": "route",
+	"logout": {
+		"logoutEndpoint": "/do/logout"
+	},
+	"routes": [{
+		"source": "^/api/(.*)$",
+		"target": "$1",
+		"authenticationType": "xsuaa",
+		"destination": "api",
+		"csrfProtection": false
+	}, {
+		"source": "^/web/(.*)$",
+		"target": "$1",
+		"authenticationType": "none",
+		"localDir": "webapp"
+	}]
 }

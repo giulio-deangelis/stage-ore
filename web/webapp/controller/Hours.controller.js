@@ -14,12 +14,7 @@ sap.ui.define([
     'sap/m/ListMode',
     'sap/ui/export/Spreadsheet',
     'training/hours/web/model/Formatter',
-    'training/hours/web/util/MessageHelper',
-    'training/hours/web/util/extensions/String',
-    'training/hours/web/util/extensions/Array',
-    'training/hours/web/util/extensions/Date',
-    'training/hours/web/util/extensions/Table',
-    'training/hours/web/util/extensions/JSONModel'
+    'training/hours/web/util/MessageHelper'
 ], (
     Controller,
     JSONModel,

@@ -39,6 +39,7 @@ sap.ui.define([
         onLeave() {
             model.resetChanges()
             this.getOwnerComponent().getRouter().navTo('Home')
+            this.navTo('welcome')
         },
 
         navTo(id) {

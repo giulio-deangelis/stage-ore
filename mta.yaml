@@ -17,12 +17,13 @@ modules:
       memory: 512M
       disk-quota: 512M
     provides:
-      - name: srv_api
+      - name: api
         properties:
           url: '${default-url}'
     requires:
       - name: hours-db-hdi-container
       - name: hours-db
+      - name: hours-uaa
   - name: hours-web
     type: html5
     path: web
@@ -32,14 +33,24 @@ modules:
     build-parameters:
       builder: grunt
     requires:
-      - name: srv_api
+      - name: api
         group: destinations
         properties:
-          name: srv_api
+          name: api
           url: '~{url}'
           forwardAuthToken: true
+      - name: hours-uaa
 resources:
   - name: hours-db-hdi-container
     type: com.sap.xs.hdi-container
     properties:
       hdi-container-name: '${service-name}'
+  - name: hours-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: application
+      service: xsuaa
+      path: ./xs-security.json
+      config:
+        xsappname: 'hours-${space}'
+        tenant-mode: dedicated

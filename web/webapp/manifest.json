@@ -15,7 +15,7 @@
 		},
 		"dataSources": {
 			"hours": {
-				"uri": "/hours/hours/",
+				"uri": "/api/",
 				"type": "OData",
 				"settings": {
 					"localUri": "localService/metadata.xml",
@@ -102,17 +102,23 @@
 				"pattern": "Home",
 				"titleTarget": "",
 				"greedy": false,
-				"target": ["Home"]
+				"target": [
+					"Home"
+				]
 			}, {
 				"name": "Hours",
 				"pattern": "Hours",
 				"titleTarget": "",
 				"greedy": false,
-				"target": ["Hours"]
+				"target": [
+					"Hours"
+				]
 			}, {
 				"name": "Projects",
 				"pattern": "Projects",
-				"target": ["Projects"]
+				"target": [
+					"Projects"
+				]
 			}],
 			"targets": {
 				"Projects": {
