@@ -25,4 +25,5 @@ service Hours @(impl:'hours-service') {
   
   function user() returns String;
   function env(var: String) returns String;
+  function token() returns String;
 }

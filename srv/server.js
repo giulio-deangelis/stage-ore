@@ -10,14 +10,5 @@ module.exports = async () => {
 	app.use(passport.initialize())
 	app.use(passport.authenticate('JWT', {session: false}))
 
-	app.get('/token', () => {
-		try {
-    		const token = req.headers.authorization.substring(7).split('.')[1];
-    		return JSON.parse(Buffer.from(token, 'base64').toString('ascii'))
-		} catch (err) {
-		    return {error: 'Invalid token', reason: err.message}
-		}
-	});
-
 	return server({app})
 }
